@@ -1,0 +1,27 @@
+{
+  "domain": "emoji",
+  "version": "day5",
+  "prompt_style": {
+    "shot": "front-facing portrait",
+    "angle": "straight-on",
+    "lighting": "flat digital illustration lighting",
+    "lens_or_style": "vector art, flat design, emoji style",
+    "mood": "expressive, fun, colorful"
+  },
+  "scenes": [
+    {
+      "id": "scene_01",
+      "diary_sentence": "오늘 정말 기분이 너무 좋았다.",
+      "visual_focus": "happy emoji character with big smile and sparkling eyes",
+      "prompt_addons": ["bright yellow", "sparkles", "rosy cheeks", "emoji style illustration"],
+      "negative_prompt": "realistic, photo, dark background, sad expression"
+    },
+    {
+      "id": "scene_02",
+      "diary_sentence": "갑자기 깜짝 놀라는 일이 생겼다.",
+      "visual_focus": "surprised emoji with wide eyes and open mouth",
+      "prompt_addons": ["wide open eyes", "O-shaped mouth", "shock lines", "yellow emoji"],
+      "negative_prompt": "realistic, photo, calm expression, text"
+    }
+  ]
+}
