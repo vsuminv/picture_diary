@@ -1,5 +1,6 @@
 import json
 import os
+from pathlib import Path
 
 from dotenv import load_dotenv
 from openai import OpenAI
@@ -14,37 +15,54 @@ SYSTEM_PROMPT = """
 {
   "scenes": [
     {
-      "scene_kr": "한국어로 장면을 묘사하는 설명 (50자 이내)",
-      "prompt_en": "Detailed English image generation prompt for DALL-E (include lighting, mood, style, composition)"
+      "scene_id": 1,
+      "scene_kr": "한국어 1줄 장면 설명",
     }
   ]
 }
 
-[장면 추출 원칙]
+[추출 원칙]
 - 각 장면은 독립적으로 하나의 이미지로 표현 가능해야 합니다
-- prompt_en은 여행 야경 사진 스타일로 구체적으로 작성하세요
-- 조명(lighting), 분위기(mood), 시각적 초점(visual focus)을 반드시 포함하세요
-- 텍스트, 워터마크, 흐릿한 요소는 제외 방향으로 작성하세요
+- prompt_en은 shot size / angle / lighting / mood 를 포함한 사진 지시 형식으로 작성하세요
+- 야경 여행 테마에 맞는 시각적 표현을 사용하세요
 """
 
 
 def extract_scenes(diary_text: str) -> list[dict]:
+    """일기 텍스트를 받아 scenes 리스트를 반환합니다."""
     api_key = os.getenv("OPENAI_API_KEY")
     if not api_key:
-        raise RuntimeError("OPENAI_API_KEY가 .env에 설정되지 않았습니다.")
-
-    client = OpenAI(api_key=api_key)
+        raise RuntimeError("OPENAI_API_KEY가 .env에 없습니다.")
+    client = OpenAI()
     response = client.chat.completions.create(
         model="gpt-4o-mini",
         messages=[
             {"role": "system", "content": SYSTEM_PROMPT},
-            {"role": "user", "content": f"다음 여행 일기에서 장면을 추출해주세요:\n\n{diary_text}"},
+            {"role": "user", "content": diary_text},
         ],
         response_format={"type": "json_object"},
         temperature=0.7,
-        max_tokens=1500,
+        max_tokens=1000,
     )
-
     content = response.choices[0].message.content
     data = json.loads(content)
-    return data.get("scenes", [])
+    return data["scenes"]
+
+
+def validate_scenes(scenes: list[dict]) -> list[str]:
+    """scenes 리스트가 필수 필드(scene_kr, prompt_en)를 충족하는지 검증합니다."""
+    errors: list[str] = []
+    required_fields = {"scene_kr", "prompt_en"}
+    for i, scene in enumerate(scenes, start=1):
+        missing = required_fields - scene.keys()
+        if missing:
+            errors.append(f"장면 {i} 필드 누락: {missing}")
+    return errors
+
+
+def save_scenes(scenes: list[dict], out_path: str) -> None:
+    """scenes 리스트를 JSON 파일로 저장합니다."""
+    out = Path(out_path)
+    out.parent.mkdir(parents=True, exist_ok=True)
+    with open(out, "w", encoding="utf-8") as f:
+        json.dump({"scenes": scenes}, f, ensure_ascii=False, indent=2)
