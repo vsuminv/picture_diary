@@ -1,4 +1,4 @@
-# Picture Diary — 여행 야경 일기 자동 시각화 파이프라인
+# Picture Diary — 그림일기 시각화 파이프라인
 
 > GitHub: https://github.com/vsuminv/picture_diary
 
