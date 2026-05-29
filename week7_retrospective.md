@@ -63,7 +63,6 @@
 ### 효과
 - 이미지 다양성 확보
 - 동일 텍스트에서도 다른 카메라 연출 가능
-- 영상용 장면 선택 기준 확보 가능
 
 ## 4. 개선 2 — Product Pipeline 구조화
 
@@ -111,10 +110,10 @@ travel_2.png → blue hour
 
 
 ## 5. 핵심 어려웠던 점
-- OpenAI API parameter mismatch (quality 값 오류)
-- image 생성은 되는데 video는 비동기 처리 필요
+- OpenAI API parameter mismatch 
 - scene 구조 없으면 결과 일관성 붕괴
-- pipeline return 구조가 계속 깨짐 (list mismatch)
+- pipeline return 구조가 계속 깨짐 
+
 ## 6. 배운 점
 LLM은 “텍스트 생성기”가 아니라 “구조 생성기”로 써야 안정적이다
 이미지 품질은 프롬프트보다 구조화된 입력(JSON) 영향이 더 크다

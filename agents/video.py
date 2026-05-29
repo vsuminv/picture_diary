@@ -11,7 +11,7 @@ def load_images(image_dir: str = "outputs") -> list[str]:
     return [str(img) for img in images]
 
 
-def pick_best_image(image_paths: list[str]) -> str:
+def pick_image(image_paths: list[str]) -> str:
     return image_paths[-1]
 
 
@@ -52,13 +52,12 @@ def generate_video(image_path: str, output_path: str) -> str:
 
 def save_video():
     images = load_images()
-    best = pick_best_image(images)
+    image = pick_image(images)
 
-    video = generate_video(best, "outputs/picture_diary.mp4")
+    video = generate_video(image, "outputs/picture_diary.mp4")
 
     return {
         "images": images,
-        "best": best,
         "video": video
     }
 
