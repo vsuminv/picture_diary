@@ -33,6 +33,9 @@ pip install -r requirements.txt
 
 | 장면 | 생성 파일 |
 |------|-----------|
+| 그림일기1 | `outputs/picture_diary_1.png` |
+| 그림일기2 | `outputs/picture_diary_2.png` |
+| 제품사진 | `outputs/product_laptop.png` |
 | 파리 에펠탑 골든아워 | `outputs/travel_1.png` |
 | 파리 에펠탑 블루아워 | `outputs/travel_2.png` |
 ---
