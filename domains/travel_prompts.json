@@ -1,0 +1,34 @@
+{
+  "domain": "travel",
+  "version": "day5",
+  "prompt_style": {
+    "shot": "wide shot",
+    "angle": "eye-level",
+    "lens_or_style": "35mm travel photography",
+    "mood": "cinematic instagram travel style"
+  },
+  "scenes": [
+    {
+      "id": "scene_01",
+      "diary_sentence": "Eiffel Tower, Paris의 golden_hour 분위기",
+      "visual_focus": "Eiffel Tower, Paris",
+      "prompt_addons": [
+        "golden_hour",
+        "travel photography",
+        "cinematic lighting"
+      ],
+      "negative_prompt": "blur, text, watermark"
+    },
+    {
+      "id": "scene_02",
+      "diary_sentence": "Eiffel Tower, Paris의 blue_hour 분위기",
+      "visual_focus": "Eiffel Tower, Paris",
+      "prompt_addons": [
+        "blue_hour",
+        "travel photography",
+        "cinematic lighting"
+      ],
+      "negative_prompt": "blur, text, watermark"
+    }
+  ]
+}

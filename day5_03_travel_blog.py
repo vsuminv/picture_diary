@@ -1,61 +1,149 @@
-"""
-여행 블로그 도메인 — golden_hour vs blue_hour 시간대 비교 이미지 생성
-보너스: 시간대 변형 비교 구현
-"""
-
 from pathlib import Path
-
 from dotenv import load_dotenv
-
-from agents.image import generate_image
+from openai import OpenAI
+import json
+import base64
 
 load_dotenv()
 
-Path("outputs").mkdir(exist_ok=True)
+client = OpenAI()
 
-TIME_VARIANTS: dict[str, dict] = {
-    "golden_hour": {
-        "lighting": "warm golden sunset light, amber glow, long soft shadows",
-        "mood":     "warm, romantic, nostalgic, glowing",
-        "palette":  "golden yellows, warm oranges, honey tones",
-    },
-    "blue_hour": {
-        "lighting": "cool twilight blue light, city lights just switching on, dusk",
-        "mood":     "serene, mysterious, ethereal, contemplative",
-        "palette":  "deep indigo blues, cool purples, silver whites",
-    },
+Path("outputs").mkdir(exist_ok=True)
+Path("domains").mkdir(exist_ok=True)
+
+travel_place = {
+    "location": "Eiffel Tower, Paris",
+    "description": (
+        "파리 에펠탑을 배경으로 한 도시 여행 장면, "
+        "감성적인 여행자의 시선으로 바라본 풍경"
+    )
 }
 
-BASE_SCENE: str = (
-    "A scenic travel landscape of a coastal village, "
-    "traditional architecture, boats in calm harbor, cobblestone streets, "
-    "professional travel photography, ultra detailed, cinematic composition, 8K"
-)
+
+TIME_VARIANTS = {
+    "golden_hour": {
+        "lighting": "warm golden sunset light",
+        "sky": "orange and pink sunset sky",
+        "mood": "warm emotional evening atmosphere"
+    },
+    "blue_hour": {
+        "lighting": "cool blue ambient twilight light",
+        "sky": "deep blue twilight sky",
+        "mood": "calm cinematic night atmosphere"
+    }
+}
+
+PROMPT_STYLE = {
+    "shot": "wide shot",
+    "angle": "eye-level",
+    "lens_or_style": "35mm travel photography",
+    "mood": "cinematic instagram travel style"
+}
 
 
-def build_travel_prompt(base_scene: str, time_of_day: str) -> str:
-    """기본 장면과 시간대를 받아 이미지 생성 프롬프트를 반환합니다."""
-    variant = TIME_VARIANTS.get(time_of_day, TIME_VARIANTS["golden_hour"])
-    return (
-        f"{base_scene}, "
-        f"{variant['lighting']}, "
-        f"mood: {variant['mood']}, "
-        f"color palette: {variant['palette']}, "
-        f"{time_of_day} photography"
+def build_travel_prompt(location: str, description: str, time_key: str) -> str:
+
+    variant = TIME_VARIANTS[time_key]
+
+    return f"""
+{location}
+{description}
+
+{variant['sky']}
+{variant['lighting']}
+{variant['mood']}
+
+cinematic travel photography,
+35mm lens,
+ultra realistic,
+high detail,
+instagram travel aesthetic
+"""
+
+
+def save_b64_image(b64_data: str, save_path: Path) -> str:
+
+    save_path.parent.mkdir(parents=True, exist_ok=True)
+
+    save_path.write_bytes(
+        base64.b64decode(b64_data)
+    )
+
+    return str(save_path)
+
+
+def generate_travel_image(prompt: str, output_path: str) -> str:
+
+    result = client.images.generate(
+        model="gpt-image-1.5",
+        prompt=prompt,
+        size="1024x1024",
+        quality="auto",
+        n=1
+    )
+
+    b64_data = result.data[0].b64_json
+
+    return save_b64_image(
+        b64_data,
+        Path(output_path)
     )
 
 
+
+def save_travel_json():
+
+    scenes = []
+
+    for idx, time_key in enumerate(TIME_VARIANTS.keys(), start=1):
+
+        scenes.append({
+            "id": f"scene_{idx:02d}",
+            "diary_sentence": f"{travel_place['location']}의 {time_key} 분위기",
+            "visual_focus": travel_place["location"],
+            "prompt_addons": [
+                time_key,
+                "travel photography",
+                "cinematic lighting"
+            ],
+            "negative_prompt": "blur, text, watermark"
+        })
+
+    data = {
+        "domain": "travel",
+        "version": "day5",
+        "prompt_style": PROMPT_STYLE,
+        "scenes": scenes
+    }
+
+    Path("domains").mkdir(exist_ok=True)
+
+    with open("domains/travel_prompts.json", "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
+
+    print("JSON 저장 완료 -> domains/travel_prompts.json")
+
+
+
 if __name__ == "__main__":
-    print("시간대별 여행 사진 비교 생성")
-    print("=" * 40)
 
-    for time_variant in ["golden_hour", "blue_hour"]:
-        prompt = build_travel_prompt(BASE_SCENE, time_variant)
-        output_path = f"outputs/travel_{time_variant}.png"
-        print(f"\n[{time_variant}] 생성 중...")
-        path = generate_image(prompt, output_path, model="dalle")
-        print(f"  저장됨: {path}")
+    save_travel_json()
 
-    print("\n두 이미지를 비교해보세요:")
-    print("  outputs/travel_golden_hour.png")
-    print("  outputs/travel_blue_hour.png")
+    for idx, time_key in enumerate(TIME_VARIANTS.keys(), start=1):
+
+        prompt = build_travel_prompt(
+            location=travel_place["location"],
+            description=travel_place["description"],
+            time_key=time_key
+        )
+
+        output_path = f"outputs/travel_{idx}.png"
+
+        print(f"\n생성 중: {time_key}")
+
+        image_path = generate_travel_image(
+            prompt=prompt,
+            output_path=output_path
+        )
+
+        print(f"저장 완료: {image_path}")

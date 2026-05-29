@@ -1,0 +1,24 @@
+{
+  "domain": "product",
+  "version": "day5",
+  "prompt_style": {
+    "shot": "close-up",
+    "angle": "eye-level",
+    "lighting": "studio lighting",
+    "lens_or_style": "50mm macro lens",
+    "mood": "clean, professional"
+  },
+  "scenes": [
+    {
+      "id": "scene_01",
+      "diary_sentence": "오늘 새 laptop 제품을 확인했다.",
+      "visual_focus": "laptop",
+      "prompt_addons": [
+        "product photography",
+        "clean white background",
+        "soft shadows"
+      ],
+      "negative_prompt": "text, watermark, blurry"
+    }
+  ]
+}

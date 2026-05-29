@@ -18,6 +18,10 @@ SYSTEM_PROMPT = """
       "scene_id": 1,
       "scene_kr": "한국어 1줄 장면 설명",
       "prompt_en" : "영문 이미지 프롬프트 1줄",
+      "shot": "WS", "angle": "eye-level", 
+      "lighting": "backlit lighting", 
+      "lens": "24mm wide", 
+      "composition": "rule of thirds"
     }
   ]
 }
@@ -27,6 +31,12 @@ SYSTEM_PROMPT = """
 - prompt_en은 반드시 영어로 작성하고 wide shot/medium shot/close-up, eye-level/low/high angle, soft/rim/backlit lighting, watercolor diary illustration 스타일 포함합니다.
 - 야경 여행 테마에 맞는 시각적 표현을 사용하세요
 - scene_id는 1부터 시작하여 순차적으로 증가시킵니다.
+- shot는 WS/MS/BS/CU 중 하나 사용 
+- angle은 eye-level/low angle/high angle 중 하나 사용 
+- lighting은 soft lighting/backlit lighting/rim lighting 중 하나 사용 
+- lens는 24mm wide/50mm portrait/85mm tight 중 하나 사용 
+- composition은 rule of thirds/centered composition/negative space 중 하나 사용 
+- prompt_en은 반드시 영어로 작성 - watercolor diary illustration 스타일 포함
 """
 
 

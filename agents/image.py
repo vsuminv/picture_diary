@@ -7,7 +7,7 @@ import  base64
 
 STYLE_PREFIX = (
     "20대 여성, 중단발 머리, 따뜻한 미소, "
-    "따뜻한 느낌의 수채화 일러스트 스타일"
+    "따뜻한 느낌의 인스타 피드 스타일"
 )
 
 
@@ -32,16 +32,24 @@ def generate_gpt(client:OpenAI, prompt:str, save_path:Path) -> str:
     b64_data = result.data[0].b64_json
     return _save_b64_to_png(b64_data, save_path)
 
-def generate_image(scene:dict, backend:str = "fal") -> str:
+def generate_image(scene:dict, backend:str = "gpt") -> str:
     """장면 한 항목을 받아 이미지를 생성한다. 경로 정보 반환
     ARGS:
       scenes : {"scene_id" : int, "scene_kr" : str, "prompt_en" : str}
-      backend : "gpt" -> generate_gpt, "fal" -> generate_fal
+      backend : "gpt" -> generate_gpt, "
       RETURN:
         저장된 이미지 파일의 경로
     """
     scene_id = scene.get("scene_id", 1)
-    prompt = scene.get("prompt_en", "")
+    prompt = f""" 
+            {scene.get("prompt_en", "")}, 
+            {scene.get("shot", "")}, 
+            {scene.get("angle", "")}, 
+            {scene.get("lighting", "")}, 
+            {scene.get("lens", "")}, 
+            {scene.get("composition", "")}, 
+            watercolor diary illustration, cinematic sunset mood, emotional korean diary style
+             """
     save_path = Path("outputs")
     save_path = save_path / f"picture_diary_{scene_id}.png"
     print("이미지 생성 중....")
