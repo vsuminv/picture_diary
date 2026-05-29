@@ -2,8 +2,12 @@
 
 > GitHub: https://github.com/vsuminv/picture_diary
 
-여행 일기 텍스트를 입력하면 GPT-4o-mini가 핵심 장면을 추출하고, DALL-E 3가 여행 야경 이미지를 자동 생성하는 멀티 LLM 파이프라인입니다.  
-`일기 텍스트 → 장면 추출(GPT-4o-mini) → 이미지 생성(DALL-E 3)` 순서로 파이프라인이 동작합니다.
+Picture Diary는 텍스트를 기반으로 여행/제품 이미지를 생성하는 LLM 파이프라인입니다.  
+
+한강 노을을 바라보는 그림일기, 제품 카탈로그 이미지, 그리고 여행 블로그(도시 야경/시간대 변화) 장면을 입력하면  
+GPT-4o-mini가 핵심 장면을 추출하고 OpenAI 이미지 모델을 통해 시각적인 이미지로 변환합니다.
+
+`일기 텍스트 → 장면 추출 → 이미지 및 동영상 생성` 순서로 파이프라인이 동작합니다.
 
 ---
 
@@ -18,11 +22,10 @@ pip install -r requirements.txt
 # FAL_KEY=...
 
 # 3. 파이프라인 실행
-python pipeline.py
+그림일기 실행 : python pipeline.py
+제품 실행 : python day5_01_product_catalog.py
+여행블로그 실행 : day5_03_travel_blog.py
 ```
-
-> `domains/travel_prompts.json` 이 없으면 GPT-4o-mini가 자동 생성합니다.  
-> 따로 생성하려면: `python generate_domain_prompts.py`
 
 ---
 
@@ -30,36 +33,34 @@ python pipeline.py
 
 | 장면 | 생성 파일 |
 |------|-----------|
-| 도시 야경 (시부야 교차로) | `outputs/travel_1.png` |
-| 강변 반사 야경 | `outputs/travel_2.png` |
-| 별밤 아래 마을 | `outputs/travel_3.png` |
-| 골든아워 vs 블루아워 비교 | `outputs/travel_golden_hour.png` / `outputs/travel_blue_hour.png` |
-
+| 파리 에펠탑 골든아워 | `outputs/travel_1.png` |
+| 파리 에펠탑 블루아워 | `outputs/travel_2.png` |
 ---
 
 ## 파일 구조
 
 ```text
 picture_diary/
-├── .env                           ← API 키 (⛔ 커밋 금지)
+├── .env
 ├── .gitignore
 ├── README.md
 ├── requirements.txt
-├── pipeline.py                    ← 전체 파이프라인 진입점
-├── generate_domain_prompts.py     ← GPT-4o-mini로 도메인 JSON 자동 생성
+├── pipeline.py                  ← 여행 그림일기 전체 파이프라인
 ├── agents/
-│   ├── __init__.py
-│   ├── scene.py                   ← 일기 → 장면 추출 (extract_scenes)
-│   ├── image.py                   ← 장면 → 이미지 생성 (generate_image)
-│   └── video.py                   ← 이미지 → 영상 생성 (generate_video)
-├── domains/                       ← GPT가 자동 생성하는 도메인 설정 JSON
+│   ├── scene.py                 ← GPT 장면 추출
+│   ├── image.py                 ← OpenAI 이미지 생성
+│   └── video.py                 ← (추후) 이미지 → 영상 생성
+├── day5_01_product_catalog.py   ← 제품 이미지 생성
+├── day5_03_travel_blog.py      ← 시간대 비교 (golden/blue)
+├── domains/
 │   ├── travel_prompts.json
-│   └── emoji_prompts.json
-├── day5_01_product_catalog.py
-├── day5_02_emoticons.py
-├── day5_03_travel_blog.py         ← golden_hour vs blue_hour 비교
-├── week7_retrospective.md
-└── outputs/                       ← 생성 결과물 (gitignore 처리)
+│   └── product_prompts.json
+└── outputs/
+    ├── picture_diary_1.png
+    ├── picture_diary_2.png
+    ├── product_laptop.png
+    ├── travle_1.png           ← 시간대 비교 (golden)
+    └── travle_2.png           ← 시간대 비교 (blue)
 ```
 
 ---
@@ -84,7 +85,7 @@ picture_diary/
 
 ## 보안 체크리스트
 
-- [x] `.env` 파일이 `.gitignore`에 등록되어 Git에 커밋되지 않음
-- [x] 모든 API 키는 `load_dotenv()` + `os.getenv()`로만 로드
-- [x] 코드 어디에도 API 키가 하드코딩되지 않음
-- [x] README에 실제 API 키 값(`sk-` 패턴) 없음
+- [✅] `.env` 파일이 `.gitignore`에 등록되어 Git에 커밋되지 않음
+- [✅] 모든 API 키는 `load_dotenv()` + `os.getenv()`로만 로드
+- [✅] 코드 어디에도 API 키가 하드코딩되지 않음
+- [✅] README에 실제 API 키 값(`sk-` 패턴) 없음
