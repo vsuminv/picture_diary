@@ -1,7 +1,5 @@
 # Week 7 학습 회고 — 멀티 LLM 파이프라인
 
-# Week 7 Retrospective — Picture Diary Pipeline
-
 ## 1. 프로젝트 초기 목표
 
 처음 목표는 다음과 같은 단일 파이프라인이었다.
