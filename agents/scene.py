@@ -17,14 +17,16 @@ SYSTEM_PROMPT = """
     {
       "scene_id": 1,
       "scene_kr": "한국어 1줄 장면 설명",
+      "prompt_en" : "영문 이미지 프롬프트 1줄",
     }
   ]
 }
 
 [추출 원칙]
 - 각 장면은 독립적으로 하나의 이미지로 표현 가능해야 합니다
-- prompt_en은 shot size / angle / lighting / mood 를 포함한 사진 지시 형식으로 작성하세요
+- prompt_en은 반드시 영어로 작성하고 wide shot/medium shot/close-up, eye-level/low/high angle, soft/rim/backlit lighting, watercolor diary illustration 스타일 포함합니다.
 - 야경 여행 테마에 맞는 시각적 표현을 사용하세요
+- scene_id는 1부터 시작하여 순차적으로 증가시킵니다.
 """
 
 
@@ -60,9 +62,9 @@ def validate_scenes(scenes: list[dict]) -> list[str]:
     return errors
 
 
-def save_scenes(scenes: list[dict], out_path: str) -> None:
-    """scenes 리스트를 JSON 파일로 저장합니다."""
-    out = Path(out_path)
-    out.parent.mkdir(parents=True, exist_ok=True)
-    with open(out, "w", encoding="utf-8") as f:
-        json.dump({"scenes": scenes}, f, ensure_ascii=False, indent=2)
+# def save_scenes(scenes: list[dict], out_path: str) -> None:
+#     """scenes 리스트를 JSON 파일로 저장합니다."""
+#     out = Path(out_path)
+#     out.parent.mkdir(parents=True, exist_ok=True)
+#     with open(out, "w", encoding="utf-8") as f:
+#         json.dump({"scenes": scenes}, f, ensure_ascii=False, indent=2)
